@@ -30,7 +30,9 @@
     // ---- Football / NFL ----
     { id: 'mahomes', name: 'Patrick Mahomes',        sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Quarterback',  fact: 'A Super Bowl champion quarterback with amazing throws.',        habit: 'studies plays and practices accuracy.' },
     { id: 'kelce',   name: 'Travis Kelce',           sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Tight End',    fact: 'One of the best tight ends, great at catching passes.',         habit: 'runs route drills to get open.' },
-    { id: 'jefferson', name: 'Justin Jefferson',     sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Wide Receiver', fact: 'Known for spectacular leaping catches.',                       habit: 'trains his hands with catching drills.' }
+    { id: 'jefferson', name: 'Justin Jefferson',     sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Wide Receiver', fact: 'Known for spectacular leaping catches.',                       habit: 'trains his hands with catching drills.' },
+    { id: 'mccaffrey', name: 'Christian McCaffrey',  sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Running Back',  fact: 'A star running back for the San Francisco 49ers, great at running and catching.', habit: 'does agility drills to stay fast and quick.' },
+    { id: 'barkley',   name: 'Saquon Barkley',       sport: 'Football',   league: 'NFL',  country: 'USA',       position: 'Running Back',  fact: 'A powerful running back for the Philadelphia Eagles, famous for breakaway runs and big hurdles.', habit: 'trains his legs to run fast and jump high.' }
   ];
 
   const FOODS = [
