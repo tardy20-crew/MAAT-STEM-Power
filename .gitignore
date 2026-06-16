@@ -1,0 +1,10 @@
+# Build / distribution artifacts (the site is generated, not committed as a zip)
+*.zip
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+
+# Dependencies (none required, but just in case)
+node_modules/
