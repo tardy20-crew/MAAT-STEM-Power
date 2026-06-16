@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="STEM Star Club — fun, safe, ad-free science, tech, engineering and math games for kids." />
+  <meta name="theme-color" content="#5b2be0" />
+  <title>🌟 STEM Star Club — Cool Games for Cool Kids!</title>
+
+  <!-- Friendly rounded font (degrades gracefully to a kid-friendly system font when offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>" />
+</head>
+<body>
+  <!-- ===== Animated playful background ===== -->
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="blob b4"></span>
+  </div>
+
+  <!-- ===== Confetti layer (always present so it can fire any time) ===== -->
+  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar" id="topbar" hidden>
+    <button class="icon-btn home-btn" id="homeBtn" title="Back to games" aria-label="Back to games">🏠</button>
+    <div class="topbar-title">🌟 STEM Star Club</div>
+    <div class="topbar-right">
+      <div class="player-chip" id="playerChip" title="Switch player">
+        <span class="player-chip-avatar" id="chipAvatar">🦊</span>
+        <span class="player-chip-name" id="chipName">Player</span>
+      </div>
+      <div class="streak-chip" id="streakChip" title="Days in a row you have played!">🔥 <span id="streakCount">0</span></div>
+      <button class="icon-btn" id="soundBtn" title="Sound on/off" aria-label="Toggle sound">🔊</button>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- ===== Screen: Pick a player ===== -->
+    <section class="screen active" id="screen-players">
+      <div class="welcome">
+        <h1 class="big-title">🌟 STEM Star Club</h1>
+        <p class="subtitle">Cool science, building, coding &amp; math games — a new adventure every day!</p>
+      </div>
+      <h2 class="who-playing">Who's playing today?</h2>
+      <div class="player-grid" id="playerGrid"><!-- player cards injected here --></div>
+      <p class="parent-link"><button class="text-btn" id="openParents">👀 For Grown-Ups</button></p>
+    </section>
+
+    <!-- ===== Screen: Game Hub ===== -->
+    <section class="screen" id="screen-hub">
+      <div class="hub-hero">
+        <div class="hub-hello">
+          <h1 id="helloName">Hi there! 👋</h1>
+          <p id="helloMsg" class="hub-tip">Pick a game and let's have some fun!</p>
+        </div>
+        <div class="daily-card" id="dailyCard">
+          <div class="daily-badge">⭐ Game of the Day</div>
+          <div class="daily-game" id="dailyGameInner"><!-- filled by JS --></div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>🎮 All Games</h2>
+        <div class="trophy-mini" id="trophyMini" title="Your stickers!">🏅 <span id="trophyCount">0</span> stickers</div>
+      </div>
+      <div class="game-grid" id="gameGrid"><!-- game tiles injected here --></div>
+
+      <div class="hub-footer">
+        <button class="pill-btn" id="openTrophies">🏆 My Sticker Book</button>
+        <button class="pill-btn ghost" id="switchPlayer">🔄 Switch Player</button>
+      </div>
+    </section>
+
+    <!-- ===== Screen: A game is playing ===== -->
+    <section class="screen" id="screen-game">
+      <div class="game-stage-head">
+        <button class="pill-btn ghost small" id="backToHub">⬅ Back</button>
+        <h2 id="gameTitle">Game</h2>
+        <div class="game-score" id="gameScore"></div>
+      </div>
+      <div class="game-stage" id="gameStage"><!-- game mounts here --></div>
+    </section>
+  </main>
+
+  <!-- ===== Modal: trophies / sticker book ===== -->
+  <div class="modal-backdrop" id="trophyModal" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close-modal="trophyModal" aria-label="Close">✖</button>
+      <h2>🏆 My Sticker Book</h2>
+      <p class="modal-sub" id="trophySub">Play games to collect shiny stickers!</p>
+      <div class="sticker-shelf" id="stickerShelf"></div>
+    </div>
+  </div>
+
+  <!-- ===== Modal: for parents ===== -->
+  <div class="modal-backdrop" id="parentModal" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close-modal="parentModal" aria-label="Close">✖</button>
+      <h2>👀 For Grown-Ups</h2>
+      <div class="parent-body">
+        <p><strong>STEM Star Club</strong> is a free collection of bite-sized Science, Technology, Engineering and Math games designed for ages 5–9.</p>
+        <ul>
+          <li>✅ <strong>100% safe:</strong> no ads, no chat, no sign-up, no links out to the internet.</li>
+          <li>✅ <strong>Private:</strong> everything (names, stickers, progress) is saved only on this device — nothing is ever uploaded.</li>
+          <li>✅ <strong>Works offline</strong> once the page has loaded.</li>
+          <li>✅ <strong>Encouraging by design:</strong> mistakes are met with kindness, not penalties.</li>
+        </ul>
+        <p>Each child gets their own profile. The <em>age</em> you choose sets the difficulty automatically (younger = gentler). The "🔥 streak" rewards coming back to learn a little every day.</p>
+        <h3>Manage players</h3>
+        <div class="parent-players" id="parentPlayers"></div>
+        <button class="pill-btn danger small" id="resetAll">🧹 Reset everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modal: add / edit player ===== -->
+  <div class="modal-backdrop" id="editModal" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close-modal="editModal" aria-label="Close">✖</button>
+      <h2 id="editTitle">New Player</h2>
+      <label class="field-label">Name</label>
+      <input class="text-input" id="editName" maxlength="14" placeholder="Type a name..." autocomplete="off" />
+      <label class="field-label">Pick an avatar</label>
+      <div class="avatar-picker" id="avatarPicker"></div>
+      <label class="field-label">How old are you?</label>
+      <div class="age-picker" id="agePicker"></div>
+      <div class="edit-actions">
+        <button class="pill-btn" id="savePlayer">💾 Save</button>
+        <button class="pill-btn ghost" id="cancelPlayer">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Celebration layer (confetti + big message) ===== -->
+  <div class="celebrate-layer" id="celebrateLayer" hidden>
+    <div class="celebrate-card" id="celebrateCard">
+      <div class="celebrate-emoji" id="celebrateEmoji">🎉</div>
+      <h2 id="celebrateTitle">Awesome!</h2>
+      <p id="celebrateMsg">You did it!</p>
+      <div class="celebrate-reward" id="celebrateReward"></div>
+      <div class="celebrate-actions">
+        <button class="pill-btn" id="celebratePlayAgain">🔁 Play Again</button>
+        <button class="pill-btn ghost" id="celebrateHome">🏠 More Games</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core scripts (plain scripts so the site also works by double-clicking index.html) -->
+  <script src="js/storage.js"></script>
+  <script src="js/dom.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/messages.js"></script>
+
+  <!-- Games (each registers itself into window.STEM) -->
+  <script src="js/games/math.js"></script>
+  <script src="js/games/robot.js"></script>
+  <script src="js/games/memory.js"></script>
+  <script src="js/games/pattern.js"></script>
+  <script src="js/games/count.js"></script>
+  <script src="js/games/colorlab.js"></script>
+
+  <!-- App last (it reads the game registry) -->
+  <script src="js/app.js"></script>
+</body>
+</html>
