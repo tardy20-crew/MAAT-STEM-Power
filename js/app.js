@@ -1,5 +1,5 @@
 /* =========================================================
-   app.js — the STEM Star Club controller.
+   app.js — the MAAT STEM Power controller.
    Handles players, the game hub, launching games and rewards.
    ========================================================= */
 (function () {

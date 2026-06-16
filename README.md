@@ -1,4 +1,4 @@
-# 🌟 STEM Star Club
+# 🌟 MAAT STEM Power
 
 A bright, friendly, **Roblox-style game hub** packed with bite-sized **Science, Technology,
 Engineering & Math** games for kids — built especially for a curious 8-year-old and 6-year-old.
