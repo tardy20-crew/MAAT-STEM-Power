@@ -1,8 +1,14 @@
 name: Deploy to GitHub Pages
 
+# NOTE: Automatic deploys are turned OFF for now.
+# GitHub Pages must first be enabled (Settings -> Pages -> Source:
+# "GitHub Actions") and, on a free plan, the repository must be public.
+# Once that's done, re-enable automatic deploys by uncommenting the
+# "push" trigger below — or just run this workflow manually from the
+# Actions tab ("Run workflow").
 on:
-  push:
-    branches: ["claude/tender-cori-ierkl9"]
+  # push:
+  #   branches: ["claude/tender-cori-ierkl9"]
   workflow_dispatch:
 
 # Permissions needed to deploy to GitHub Pages
