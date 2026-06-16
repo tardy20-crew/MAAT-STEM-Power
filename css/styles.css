@@ -416,6 +416,29 @@ body {
 .ex-cue { color: var(--ink-soft); font-size: 1.15rem; margin: 4px 0 14px; }
 .ex-timer { font-size: 3rem; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
 
+/* ---------- juniors / teens mode bar ---------- */
+.mode-bar { display: flex; gap: 10px; justify-content: center; margin: 2px 0 18px; }
+.mode-opt { font-family: var(--font); cursor: pointer; border: 3px solid rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.16); color: #fff; border-radius: 18px; padding: 8px 20px; display: flex; flex-direction: column; align-items: center; line-height: 1.15; transition: transform 0.08s ease; }
+.mode-opt:active { transform: translateY(2px); }
+.mode-opt .mo-label { font-weight: 700; font-size: 1.05rem; }
+.mode-opt .mo-sub { font-size: 0.72rem; opacity: 0.85; }
+.mode-opt.sel { background: #fff; color: var(--purple); border-color: #fff; }
+
+/* ---------- TEEN THEME (cooler, calmer) ---------- */
+body.teen { background: linear-gradient(160deg, #26334e 0%, #1a2540 50%, #101a30 100%); }
+body.teen .blob { opacity: 0.22; }
+body.teen .big-title { animation: none; }
+body.teen .who-playing, body.teen .subtitle { opacity: 0.92; }
+body.teen .game-tile:hover { transform: translateY(-6px); }          /* less playful tilt */
+body.teen .player-card:hover { transform: translateY(-5px); }
+body.teen .pill-btn { background: linear-gradient(#3aa0ff, #2b6fe2); box-shadow: 0 6px 0 #1f55b8; }
+body.teen .pill-btn:active { box-shadow: 0 1px 0 #1f55b8; }
+body.teen .streak-chip { background: linear-gradient(#3aa0ff, #6a5cff); }
+body.teen .daily-card { border-color: #3aa0ff; background: linear-gradient(150deg, #ffffff, #eaf2ff); }
+body.teen .daily-badge { background: #3aa0ff; color: #fff; }
+body.teen .mode-opt.sel { color: #1f55b8; }
+body.teen .celebrate-emoji { animation: none; }
+
 [hidden] { display: none !important; }
 
 /* ---------- small screens ---------- */

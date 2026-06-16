@@ -5,20 +5,35 @@
 (function () {
   const ROUND = 8;
 
-  function makeQuestion(difficulty) {
+  function makeQuestion(tier) {
     const r = STEM.rand;
-    let a, b, op, ans;
-    if (difficulty === 'easy') {
+    let a, b, c, op, ans, text;
+    if (tier === 'easy') {
       op = ['+', '-'][r(0, 1)];
       if (op === '+') { a = r(1, 9); b = r(1, 9); ans = a + b; }
       else { a = r(2, 10); b = r(1, a); ans = a - b; }
-    } else {
+      text = a + ' ' + op + ' ' + b;
+    } else if (tier === 'medium') {
       op = ['+', '-', '×'][r(0, 2)];
       if (op === '+') { a = r(5, 30); b = r(5, 30); ans = a + b; }
       else if (op === '-') { a = r(12, 45); b = r(1, a); ans = a - b; }
       else { a = r(2, 6); b = r(2, 6); ans = a * b; }
+      text = a + ' ' + op + ' ' + b;
+    } else if (tier === 'hard') {
+      op = ['+', '-', '×', '÷'][r(0, 3)];
+      if (op === '+') { a = r(20, 99); b = r(20, 99); ans = a + b; }
+      else if (op === '-') { a = r(30, 99); b = r(1, a); ans = a - b; }
+      else if (op === '×') { a = r(3, 12); b = r(3, 12); ans = a * b; }
+      else { b = r(3, 12); ans = r(2, 12); a = b * ans; } // a ÷ b = ans (exact)
+      text = a + ' ' + op + ' ' + b;
+    } else { // expert
+      const kind = r(0, 3);
+      if (kind === 0) { a = r(2, 15); b = r(2, 12); c = r(2, 9); ans = a + b * c; text = a + ' + ' + b + ' × ' + c; } // order of ops
+      else if (kind === 1) { a = r(11, 30); b = r(11, 30); ans = a * b; text = a + ' × ' + b; }
+      else if (kind === 2) { b = r(4, 15); ans = r(4, 15); a = b * ans; text = a + ' ÷ ' + b; }
+      else { a = r(5, 20); ans = a * a; text = a + '²'; }
     }
-    return { text: a + ' ' + op + ' ' + b, ans: ans };
+    return { text: text, ans: ans };
   }
 
   function makeChoices(ans) {
@@ -71,7 +86,7 @@
         renderDots();
         feedback.textContent = '';
         feedback.className = 'feedback';
-        const q = makeQuestion(ctx.difficulty);
+        const q = makeQuestion(ctx.tier || ctx.difficulty);
         let firstTry = true;
         prompt.textContent = q.text + ' = ?';
         STEM.clear(grid);

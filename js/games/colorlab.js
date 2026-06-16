@@ -25,6 +25,7 @@
 
   STEM.registerGame({
     id: 'colorlab',
+    audience: 'juniors',
     title: 'Color Lab',
     icon: '🎨',
     blurb: 'Mix colors like a scientist!',

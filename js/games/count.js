@@ -8,6 +8,7 @@
 
   STEM.registerGame({
     id: 'count',
+    audience: 'juniors',
     title: 'Count & Tap',
     icon: '🔢',
     blurb: 'How many can you count?',

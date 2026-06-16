@@ -7,7 +7,7 @@
   const games = STEM.games;
 
   const AVATARS = ['🦊', '🐱', '🐶', '🦄', '🐼', '🐯', '🐸', '🦁', '🐵', '🐧', '🐙', '🦋', '🐢', '🐝', '🦉', '🐬', '🐲', '🦖'];
-  const AGES = [4, 5, 6, 7, 8, 9, 10];
+  const AGES = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
   /* ---------- element shortcuts ---------- */
   const $ = id => document.getElementById(id);
@@ -34,7 +34,22 @@
     $('streakCount').textContent = p.streak.count || 0;
   }
 
-  function difficultyFor(age) { return age <= 6 ? 'easy' : 'medium'; }
+  // age -> learning tier (drives how hard each game gets)
+  function tierFor(age) {
+    if (age <= 7) return 'easy';
+    if (age <= 10) return 'medium';
+    if (age <= 14) return 'hard';
+    return 'expert';
+  }
+  // keep older games working: they only distinguish 'easy' vs not
+  function difficultyFor(age) { return tierFor(age) === 'easy' ? 'easy' : 'medium'; }
+
+  // juniors vs teens — defaults from age, can be toggled per player
+  function modeFor(p) { return p.mode || (p.age >= 11 ? 'teens' : 'juniors'); }
+  function applyTheme(mode) { document.body.classList.toggle('teen', mode === 'teens'); }
+
+  // which games show for a mode (audience: 'all' | 'juniors' | 'teens'; default 'all')
+  function gamesFor(mode) { return games.filter(g => (g.audience || 'all') === 'all' || g.audience === mode); }
 
   /* ============================================================
      PLAYERS SCREEN
@@ -69,15 +84,35 @@
   /* ============================================================
      HUB
      ============================================================ */
-  function dailyGame() {
+  function dailyGame(list) {
+    const pool = (list && list.length) ? list : games;
     const d = new Date();
     const n = d.getFullYear() * 366 + (d.getMonth() * 31) + d.getDate();
-    return games[n % games.length];
+    return pool[n % pool.length];
   }
 
   function goHub() {
     show('screen-hub');
     renderHub();
+  }
+
+  function renderModeBar(mode) {
+    const bar = $('modeBar');
+    if (!bar) return;
+    STEM.clear(bar);
+    [['juniors', '🧒 Juniors', 'Ages 5–10'], ['teens', '🧑 Teens', 'Ages 11–18']].forEach(([m, label, sub]) => {
+      const btn = STEM.el('button', { class: 'mode-opt' + (m === mode ? ' sel' : '') }, [
+        STEM.el('span', { class: 'mo-label', text: label }),
+        STEM.el('span', { class: 'mo-sub', text: sub })
+      ]);
+      btn.addEventListener('click', () => {
+        const p = store.current();
+        store.updatePlayer(p.id, { mode: m });
+        STEM.sound.click();
+        renderHub();
+      });
+      bar.appendChild(btn);
+    });
   }
 
   function renderHub() {
@@ -88,8 +123,14 @@
     $('helloName').textContent = 'Hi ' + p.name + '! ' + p.avatar;
     $('helloMsg').textContent = STEM.msg.hubGreeting();
 
+    // juniors / teens mode + theme
+    const mode = modeFor(p);
+    applyTheme(mode);
+    renderModeBar(mode);
+    const visibleGames = gamesFor(mode);
+
     // game of the day
-    const dg = dailyGame();
+    const dg = dailyGame(visibleGames);
     const inner = $('dailyGameInner');
     STEM.clear(inner);
     inner.appendChild(STEM.el('span', { class: 'dg-icon', text: dg.icon }));
@@ -101,10 +142,10 @@
     inner.parentElement.onclick = () => launchGame(dg);
     inner.appendChild(playBtn);
 
-    // all games
+    // all games (filtered for this mode)
     const grid = $('gameGrid');
     STEM.clear(grid);
-    games.forEach(g => {
+    visibleGames.forEach(g => {
       const tile = STEM.el('button', { class: 'game-tile' });
       tile.style.setProperty('--tcol', g.color);
       tile.appendChild(STEM.el('span', { class: 'gt-cat', text: g.category }));
@@ -138,10 +179,13 @@
     updateChip();
 
     const p = store.current();
+    applyTheme(modeFor(p));
     const ctx = {
       player: p,
       age: p.age,
       difficulty: difficultyFor(p.age),
+      tier: tierFor(p.age),
+      mode: modeFor(p),
       sound: STEM.sound,
       confetti: STEM.confetti,
       msg: STEM.msg,
