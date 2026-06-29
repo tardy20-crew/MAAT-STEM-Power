@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sign up to volunteer at AYA — Summer 2026. Choose your available days and help shape the next generation of athletes and scholars.">
+  <title>AYA Volunteer Sign-Up — Summer 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================================================================
+       AYA Volunteer Signup — matching MAAT STEM Power color palette
+       ================================================================ */
+    :root {
+      --purple:       #6c2bd9;
+      --purple-deep:  #4a1ca3;
+      --purple-light: #9b59f5;
+      --purple-bg:    #f5f0ff;
+      --gold:         #ffd23f;
+      --gold-dark:    #e6b800;
+      --green:        #2ecc71;
+      --red:          #e74c3c;
+      --gray:         #aaa;
+      --ink:          #1a0d3d;
+      --ink-soft:     #5c4b86;
+      --card:         #ffffff;
+      --font:         'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+      --radius:       18px;
+      --shadow:       0 8px 32px rgba(0,0,0,0.14);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      background: linear-gradient(160deg, #7b5bff 0%, #5b2be0 45%, #3a1aa8 100%);
+      min-height: 100vh;
+      padding-bottom: 64px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    .header {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+      padding: 28px 20px 24px;
+      text-align: center;
+      color: white;
+    }
+
+    .header-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+    .header h1  { font-size: 2.1rem; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+    .header .dates { font-size: 1.05rem; opacity: 0.9; margin-top: 6px; }
+
+    .time-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 700;
+      padding: 7px 18px;
+      border-radius: 20px;
+      margin-top: 14px;
+      font-size: 1rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────────── */
+    .container {
+      max-width: 740px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 26px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 0.93rem;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Setup banner (shown when Firebase not configured) ───────────── */
+    .setup-banner {
+      background: #fff8e1;
+      border: 2px solid var(--gold-dark);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 22px;
+      display: none;
+    }
+
+    .setup-banner h3 { color: #7a5200; font-size: 1.1rem; margin-bottom: 8px; }
+    .setup-banner p  { color: #5a3c00; font-size: 0.9rem; line-height: 1.6; }
+    .setup-banner code {
+      background: rgba(0,0,0,0.08);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.88rem;
+    }
+
+    /* ── Day picker ─────────────────────────────────────────────────── */
+    .week-label {
+      grid-column: 1 / -1;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-soft);
+      margin-top: 6px;
+    }
+
+    .week-label:first-child { margin-top: 0; }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+      gap: 11px;
+    }
+
+    .day-btn {
+      border: 2.5px solid #e0d8f5;
+      background: white;
+      border-radius: 14px;
+      padding: 14px 10px 12px;
+      cursor: pointer;
+      text-align: center;
+      font-family: var(--font);
+      color: var(--ink);
+      transition: transform 0.12s, border-color 0.12s, background 0.12s;
+      position: relative;
+      user-select: none;
+    }
+
+    .day-btn:hover:not(:disabled):not(.selected) {
+      border-color: var(--purple-light);
+      background: var(--purple-bg);
+      transform: translateY(-2px);
+    }
+
+    .day-btn.selected {
+      border-color: var(--purple);
+      background: var(--purple);
+      color: white;
+    }
+
+    .day-btn.selected .slot-count { color: rgba(255,255,255,0.8); }
+
+    .day-btn.full {
+      border-color: #ddd;
+      background: #f3f3f3;
+      color: #bbb;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .day-btn.special-day:not(.full):not(.selected) {
+      border-color: var(--gold-dark);
+      background: #fffcf0;
+    }
+
+    .day-btn.special-day:hover:not(:disabled):not(.selected):not(.full) {
+      background: #fff8d6;
+    }
+
+    .day-name  { font-size: 1.05rem; font-weight: 700; display: block; }
+    .day-date  { font-size: 0.82rem; opacity: 0.7; display: block; margin-top: 2px; }
+    .slot-count {
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: block;
+      margin-top: 8px;
+      color: var(--ink-soft);
+    }
+
+    .full .slot-count  { color: var(--red); }
+
+    .special-star {
+      position: absolute;
+      top: -9px; right: -5px;
+      font-size: 0.95rem;
+    }
+
+    .loading-text {
+      text-align: center;
+      padding: 32px 0;
+      color: #999;
+      font-size: 1rem;
+    }
+
+    /* spinner */
+    .spinner {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border: 3px solid #e0d8f5;
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Form fields ─────────────────────────────────────────────────── */
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      font-weight: 600;
+      color: var(--purple-deep);
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .field input {
+      width: 100%;
+      border: 2px solid #e0d8f5;
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-family: var(--font);
+      font-size: 1rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+      background: white;
+    }
+
+    .field input:focus { border-color: var(--purple); }
+
+    .field input::placeholder { color: #bbb; }
+
+    /* ── Skills checkboxes ───────────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+    }
+
+    .skill-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border: 2px solid #e0d8f5;
+      border-radius: 10px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.93rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: white;
+      transition: border-color 0.12s, background 0.12s;
+      user-select: none;
+    }
+
+    .skill-chip:hover { border-color: var(--purple-light); background: var(--purple-bg); }
+
+    .skill-chip input[type="checkbox"] {
+      accent-color: var(--purple);
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .skill-chip:has(input:checked) {
+      border-color: var(--purple);
+      background: var(--purple-bg);
+    }
+
+    /* ── Messages ───────────────────────────────────────────────────── */
+    .msg {
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      font-weight: 500;
+      font-size: 0.93rem;
+      line-height: 1.5;
+    }
+    .msg.error   { background: #ffeaea; color: #c0392b; border: 1.5px solid #f5c6c6; }
+    .msg.success { background: #eafaf1; color: #1e8449; border: 1.5px solid #a9dfbf; }
+
+    /* ── Submit button ───────────────────────────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #7b3fe4, var(--purple-deep));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 17px;
+      font-family: var(--font);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.22);
+      transition: filter 0.1s, transform 0.1s, box-shadow 0.1s;
+    }
+
+    .submit-btn:hover:not(:disabled) { filter: brightness(1.1); }
+    .submit-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 rgba(0,0,0,0.22);
+    }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Success screen ─────────────────────────────────────────────── */
+    .success-card {
+      text-align: center;
+      padding: 52px 28px;
+      display: none;
+    }
+    .success-card.show { display: block; }
+
+    .success-emoji { font-size: 5rem; display: block; margin-bottom: 18px; }
+    .success-title { font-size: 2rem; color: var(--purple); margin-bottom: 14px; }
+    .success-body  { font-size: 1.05rem; color: #444; line-height: 1.7; }
+
+    .days-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 18px 0;
+    }
+
+    .day-tag {
+      background: var(--purple);
+      color: white;
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .header h1 { font-size: 1.55rem; }
+      .days-grid { grid-template-columns: repeat(2, 1fr); }
+      .skills-grid { grid-template-columns: 1fr; }
+      .card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!--
+  ======================================================================
+  AYA VOLUNTEER SIGNUP — FIREBASE SETUP (one-time, ~5 minutes, free)
+  ======================================================================
+
+  1. Go to https://console.firebase.google.com
+  2. Click "Add project" → name it (e.g. "aya-volunteer-signup") → Continue
+  3. On the left sidebar: Build → Firestore Database
+     → Create database → Start in TEST MODE → choose a region → Enable
+  4. Left sidebar: Project Overview ⚙ → Project settings → Your apps
+     → click the </> (Web) icon → register app (any nickname) → Continue
+  5. Copy the firebaseConfig values shown — paste them below where you
+     see   PASTE-YOUR-…   placeholders.
+  6. Back in Firestore → Rules tab → replace the rules with:
+
+       rules_version = '2';
+       service cloud.firestore {
+         match /databases/{database}/documents {
+           match /aya_days/{day} {
+             allow read: if true;
+             allow write: if true;
+           }
+           match /aya_signups/{doc} {
+             allow read: if false;
+             allow create: if true;
+           }
+         }
+       }
+
+     → Publish.
+
+  That's it! Volunteer counts update in real time for everyone.
+  View signups anytime in the Firebase Console under aya_signups.
+  ======================================================================
+  -->
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <span class="header-icon">🏀</span>
+    <h1>AYA Summer Volunteer Sign-Up</h1>
+    <p class="dates">July 27 – August 15, 2026</p>
+    <div class="time-badge">⏰ 5:30 PM – 9:30 PM each day</div>
+  </header>
+
+  <div class="container">
+
+    <!-- Firebase not-configured warning -->
+    <div class="setup-banner" id="setupBanner">
+      <h3>⚙️ One-Time Firebase Setup Required</h3>
+      <p>
+        This form uses Firebase to track volunteer slots in real time.<br>
+        See the setup instructions inside <code>volunteer-signup.html</code>
+        (search for "FIREBASE SETUP") — it takes about 5 minutes and is completely free.
+        Once you paste in your <code>firebaseConfig</code> values the form is live!
+      </p>
+    </div>
+
+    <!-- ── Main form ── -->
+    <div id="formContainer">
+
+      <!-- Day Picker -->
+      <div class="card">
+        <div class="card-title">📅 Choose Your Day(s)</div>
+        <p class="card-sub">
+          Pick every day you're available. Each day has room for <strong>6 volunteers</strong> —
+          a day will gray out once it's full. ⭐ marks bonus dates added Aug 14–15.
+        </p>
+
+        <div class="loading-text" id="daysLoading">
+          <span class="spinner"></span>Loading available days…
+        </div>
+        <div class="days-grid" id="daysGrid" style="display:none"></div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="card">
+        <div class="card-title">👤 Your Information</div>
+
+        <div id="formMsg"></div>
+
+        <div class="field">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" placeholder="First and last name"
+                 autocomplete="name" required maxlength="80">
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" placeholder="(555) 555-5555"
+                 autocomplete="tel" required>
+        </div>
+
+        <div class="field">
+          <label for="age">Age *</label>
+          <input type="number" id="age" placeholder="Your age"
+                 min="14" max="99" required>
+        </div>
+
+        <div class="field">
+          <label for="school">School / Organization *</label>
+          <input type="text" id="school" placeholder="Name of your school or organization"
+                 required maxlength="100">
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="card">
+        <div class="card-title">💡 Skills You'd Like to Share</div>
+        <p class="card-sub">
+          Check all that apply — no experience required, just a willingness to help!
+        </p>
+        <div class="skills-grid" id="skillsGrid"></div>
+      </div>
+
+      <!-- Submit -->
+      <div class="card" style="padding: 22px 26px;">
+        <button class="submit-btn" id="submitBtn">🙌 Sign Me Up as a Volunteer!</button>
+      </div>
+    </div>
+
+    <!-- ── Success screen ── -->
+    <div class="card success-card" id="successScreen">
+      <span class="success-emoji">🎉</span>
+      <h2 class="success-title">You're Signed Up!</h2>
+      <div class="success-body">
+        <p>Thanks for volunteering with AYA, <strong id="successName"></strong>!</p>
+        <p style="margin-top:14px;">You've been added to the roster for:</p>
+        <div class="days-summary" id="successDays"></div>
+        <p>📍 Please arrive by <strong>5:30 PM</strong> — we run until 9:30 PM.</p>
+        <p style="margin-top:12px; font-size:0.9rem; color:#888;">
+          Questions? Reach out to the AYA team. We're looking forward to seeing you!
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Firebase SDK (v10 modular, CDN) ── -->
+  <script type="module">
+    import { initializeApp } from
+      'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import {
+      getFirestore, collection, doc,
+      onSnapshot, runTransaction, addDoc,
+      serverTimestamp, setDoc, getDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    /* ================================================================
+       PASTE YOUR FIREBASE CONFIG HERE
+       (replace every "PASTE-YOUR-…" value)
+       ================================================================ */
+    const firebaseConfig = {
+      apiKey:            "PASTE-YOUR-API-KEY",
+      authDomain:        "PASTE-YOUR-PROJECT-ID.firebaseapp.com",
+      projectId:         "PASTE-YOUR-PROJECT-ID",
+      storageBucket:     "PASTE-YOUR-PROJECT-ID.appspot.com",
+      messagingSenderId: "PASTE-YOUR-SENDER-ID",
+      appId:             "PASTE-YOUR-APP-ID"
+    };
+    /* ================================================================ */
+
+    const MAX_PER_DAY = 6;
+
+    // All volunteer dates  (July 27 – Aug 15, Mon-Thu + Fri/Sat Aug 14-15)
+    const ALL_DAYS = [
+      { id: '2026-07-27', name: 'Monday',    date: 'July 27',  week: 'Week 1 — July 27–30' },
+      { id: '2026-07-28', name: 'Tuesday',   date: 'July 28',  week: 'Week 1 — July 27–30' },
+      { id: '2026-07-29', name: 'Wednesday', date: 'July 29',  week: 'Week 1 — July 27–30' },
+      { id: '2026-07-30', name: 'Thursday',  date: 'July 30',  week: 'Week 1 — July 27–30' },
+      { id: '2026-08-03', name: 'Monday',    date: 'Aug 3',    week: 'Week 2 — Aug 3–7' },
+      { id: '2026-08-04', name: 'Tuesday',   date: 'Aug 4',    week: 'Week 2 — Aug 3–7' },
+      { id: '2026-08-05', name: 'Wednesday', date: 'Aug 5',    week: 'Week 2 — Aug 3–7' },
+      { id: '2026-08-06', name: 'Thursday',  date: 'Aug 6',    week: 'Week 2 — Aug 3–7' },
+      { id: '2026-08-10', name: 'Monday',    date: 'Aug 10',   week: 'Week 3 — Aug 10–15' },
+      { id: '2026-08-11', name: 'Tuesday',   date: 'Aug 11',   week: 'Week 3 — Aug 10–15' },
+      { id: '2026-08-12', name: 'Wednesday', date: 'Aug 12',   week: 'Week 3 — Aug 10–15' },
+      { id: '2026-08-13', name: 'Thursday',  date: 'Aug 13',   week: 'Week 3 — Aug 10–15' },
+      { id: '2026-08-14', name: 'Friday',    date: 'Aug 14',   week: 'Week 3 — Aug 10–15', special: true },
+      { id: '2026-08-15', name: 'Saturday',  date: 'Aug 15',   week: 'Week 3 — Aug 10–15', special: true },
+    ];
+
+    const SKILLS = [
+      'Sports Management',
+      'Facilities Operations',
+      'Statistician',
+      'Coaching',
+      'Automation',
+      'Resume Building',
+      'Financial Literacy',
+      'Social Media Marketing',
+      'Communications',
+      'Other',
+    ];
+
+    // ── Detect whether config was filled in ──────────────────────────
+    const isConfigured = !firebaseConfig.apiKey.startsWith('PASTE');
+    if (!isConfigured) {
+      document.getElementById('setupBanner').style.display = 'block';
+    }
+
+    // ── State ─────────────────────────────────────────────────────────
+    const dayCounts  = {};   // { '2026-07-27': 3, … }
+    const selected   = new Set();
+
+    // ── Build skills grid ─────────────────────────────────────────────
+    SKILLS.forEach(skill => {
+      const label = document.createElement('label');
+      label.className = 'skill-chip';
+      const cb = document.createElement('input');
+      cb.type  = 'checkbox';
+      cb.name  = 'skill';
+      cb.value = skill;
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(skill));
+      document.getElementById('skillsGrid').appendChild(label);
+    });
+
+    // ── Render day picker ─────────────────────────────────────────────
+    function renderDays() {
+      const grid = document.getElementById('daysGrid');
+      grid.innerHTML = '';
+      let lastWeek = null;
+
+      ALL_DAYS.forEach(day => {
+        // Week label divider
+        if (day.week !== lastWeek) {
+          const lbl = document.createElement('div');
+          lbl.className = 'week-label';
+          lbl.textContent = day.week;
+          grid.appendChild(lbl);
+          lastWeek = day.week;
+        }
+
+        const count     = dayCounts[day.id] ?? 0;
+        const isFull    = count >= MAX_PER_DAY;
+        const isSelected = selected.has(day.id);
+        const slotsLeft  = Math.max(0, MAX_PER_DAY - count);
+
+        const btn = document.createElement('button');
+        btn.type        = 'button';
+        btn.dataset.id  = day.id;
+        btn.className   = [
+          'day-btn',
+          isFull     ? 'full'        : '',
+          isSelected ? 'selected'    : '',
+          day.special ? 'special-day' : '',
+        ].filter(Boolean).join(' ');
+
+        btn.innerHTML = `
+          ${day.special ? '<span class="special-star">⭐</span>' : ''}
+          <span class="day-name">${day.name}</span>
+          <span class="day-date">${day.date}</span>
+          <span class="slot-count">
+            ${isFull
+              ? '🔴 FULL'
+              : `${slotsLeft} spot${slotsLeft === 1 ? '' : 's'} left`}
+          </span>
+        `;
+
+        btn.disabled = isFull;
+
+        if (!isFull) {
+          btn.addEventListener('click', () => {
+            selected.has(day.id) ? selected.delete(day.id) : selected.add(day.id);
+            renderDays();
+          });
+        }
+
+        grid.appendChild(btn);
+      });
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────
+    function showMsg(html, type = 'error') {
+      const el = document.getElementById('formMsg');
+      el.innerHTML = `<div class="msg ${type}">${html}</div>`;
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearMsg() {
+      document.getElementById('formMsg').innerHTML = '';
+    }
+
+    // ── Firebase live path ────────────────────────────────────────────
+    if (isConfigured) {
+      const app = initializeApp(firebaseConfig);
+      const db  = getFirestore(app);
+
+      // Real-time listener — updates counts and re-renders day grid
+      onSnapshot(collection(db, 'aya_days'), snap => {
+        // Default all to 0 first (handles days with no document yet)
+        ALL_DAYS.forEach(d => { dayCounts[d.id] = dayCounts[d.id] ?? 0; });
+        snap.forEach(d => { dayCounts[d.id] = d.data().count ?? 0; });
+
+        document.getElementById('daysLoading').style.display = 'none';
+        const grid = document.getElementById('daysGrid');
+        grid.style.display = 'grid';
+        renderDays();
+      });
+
+      // ── Submit ────────────────────────────────────────────────────
+      document.getElementById('submitBtn').addEventListener('click', async () => {
+        clearMsg();
+
+        const name   = document.getElementById('fullName').value.trim();
+        const phone  = document.getElementById('phone').value.trim();
+        const ageVal = document.getElementById('age').value.trim();
+        const school = document.getElementById('school').value.trim();
+        const skills = [...document.querySelectorAll('input[name="skill"]:checked')]
+                         .map(c => c.value);
+
+        // ── Validation ────────────────────────────────────────────
+        if (!name || !phone || !ageVal || !school) {
+          showMsg('⚠️ Please fill in all required fields (Name, Phone, Age, School).');
+          return;
+        }
+        if (selected.size === 0) {
+          showMsg('⚠️ Please select at least one day.');
+          return;
+        }
+
+        const age = parseInt(ageVal, 10);
+        if (isNaN(age) || age < 14 || age > 99) {
+          showMsg('⚠️ Please enter a valid age (14 or older).');
+          return;
+        }
+
+        // Check if any selected day is already full (live data)
+        const nowFull = [...selected].filter(id => (dayCounts[id] ?? 0) >= MAX_PER_DAY);
+        if (nowFull.length > 0) {
+          const fullDates = nowFull.map(id => ALL_DAYS.find(d => d.id === id)?.date).join(', ');
+          showMsg(`⚠️ ${fullDates} just filled up. Please deselect those days and try again.`);
+          renderDays();
+          return;
+        }
+
+        // ── Submit ────────────────────────────────────────────────
+        const btn = document.getElementById('submitBtn');
+        btn.disabled    = true;
+        btn.textContent = '⏳ Submitting…';
+
+        try {
+          const daysArray = [...selected];
+
+          // Atomically increment each selected day (prevents over-booking)
+          for (const dayId of daysArray) {
+            const dayRef = doc(db, 'aya_days', dayId);
+            await runTransaction(db, async tx => {
+              const snap    = await tx.get(dayRef);
+              const current = snap.exists() ? (snap.data().count ?? 0) : 0;
+              if (current >= MAX_PER_DAY) {
+                const d = ALL_DAYS.find(x => x.id === dayId);
+                throw new Error(
+                  `${d?.date ?? dayId} just filled up. Please deselect it and try again.`
+                );
+              }
+              snap.exists()
+                ? tx.update(dayRef, { count: current + 1 })
+                : tx.set(dayRef,    { count: 1 });
+            });
+          }
+
+          // Store the full signup record
+          await addDoc(collection(db, 'aya_signups'), {
+            name, phone, age, school, skills,
+            days: daysArray,
+            submittedAt: serverTimestamp(),
+          });
+
+          // ── Show success ──────────────────────────────────────
+          document.getElementById('formContainer').style.display = 'none';
+          const sc = document.getElementById('successScreen');
+          sc.classList.add('show');
+          document.getElementById('successName').textContent =
+            name.split(' ')[0] || name;
+
+          const successDays = document.getElementById('successDays');
+          daysArray.forEach(id => {
+            const d   = ALL_DAYS.find(x => x.id === id);
+            const tag = document.createElement('div');
+            tag.className   = 'day-tag';
+            tag.textContent = `${d?.name} ${d?.date}`;
+            successDays.appendChild(tag);
+          });
+
+          sc.scrollIntoView({ behavior: 'smooth' });
+
+        } catch (err) {
+          showMsg(`⚠️ ${err.message || 'Something went wrong — please try again.'}`);
+          btn.disabled    = false;
+          btn.textContent = '🙌 Sign Me Up as a Volunteer!';
+        }
+      });
+
+    } else {
+      // ── Demo / not-configured path ────────────────────────────────
+      document.getElementById('daysLoading').style.display = 'none';
+      document.getElementById('daysGrid').style.display    = 'grid';
+      renderDays();
+
+      document.getElementById('submitBtn').addEventListener('click', () => {
+        alert('Firebase not configured yet.\nSee setup instructions inside volunteer-signup.html.');
+      });
+    }
+  </script>
+</body>
+</html>
